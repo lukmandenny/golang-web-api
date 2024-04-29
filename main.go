@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"log"
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -72,9 +72,20 @@ func postBooksHandler(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&bookInput)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, err)
-		log.Println("Error:", err)
-		return
+		if vErr, ok := err.(validator.ValidationErrors); ok {
+			// Lakukan iterasi untuk setiap error
+			for _, e := range vErr {
+				// Proses setiap error
+				errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
+				ctx.JSON(http.StatusBadRequest, errorMessage)
+				return
+			}
+		} else {
+			// Jika err bukan validator.ValidationErrors, kirimkan pesan kesalahan umum
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
