@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/goccy/go-json"
 )
 
 func main() {
@@ -60,9 +61,9 @@ func queryHandler(ctx *gin.Context) {
 }
 
 type BookInput struct {
-	Title    string `json:"title" binding:"required"`
-	Harga    int    `json:"harga" binding:"required,number"`
-	SubTitle string `json:"sub_title"` //directive
+	Title    string      `json:"title" binding:"required"`
+	Harga    json.Number `json:"harga" binding:"required,number"`
+	SubTitle string      `json:"sub_title"` //directive
 }
 
 func postBooksHandler(ctx *gin.Context) {
@@ -72,17 +73,24 @@ func postBooksHandler(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&bookInput)
 
 	if err != nil {
+		errorMessages := []string{}
 		if vErr, ok := err.(validator.ValidationErrors); ok {
 			// Lakukan iterasi untuk setiap error
 			for _, e := range vErr {
 				// Proses setiap error
 				errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
-				ctx.JSON(http.StatusBadRequest, errorMessage)
-				return
+				errorMessages = append(errorMessages, errorMessage)
 			}
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"errors": errorMessages,
+			})
+			return
 		} else {
+			errorMessages = append(errorMessages, err.Error())
 			// Jika err bukan validator.ValidationErrors, kirimkan pesan kesalahan umum
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"errors": errorMessages,
+			})
 			return
 		}
 
