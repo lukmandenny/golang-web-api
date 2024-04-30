@@ -12,11 +12,13 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/", rootHandler)
-	r.GET("/helloworld", helloHandler)
-	r.GET("/books/:id/:title", booksHandler)
-	r.GET("/query", queryHandler)
-	r.POST("/books", postBooksHandler)
+	v1 := r.Group("/v1")
+
+	v1.GET("/", rootHandler)
+	v1.GET("/helloworld", helloHandler)
+	v1.GET("/books/:id/:title", booksHandler)
+	v1.GET("/query", queryHandler)
+	v1.POST("/books", postBooksHandler)
 
 	r.Run(":8888")
 
