@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"golang-web-api/book"
 	"golang-web-api/handler"
 	"log"
@@ -19,6 +20,73 @@ func main() {
 	}
 
 	db.AutoMigrate(&book.Book{})
+	// ++++++++++++++++++++++++++++++++++++++++++
+	// CRUD OPERATION
+	// ++++++++++++++++++++++++++++++++++++++++++
+	// // CREATE
+	// ++++++++++++++++++++++++++++++++++++++++++
+
+	// book := book.Book{}
+	// book.Title = "Kura-kura Ninja"
+	// book.Description = "Kura-kura yang bisa bertarung seperti ninja, keren!"
+	// book.Price = 150000
+	// book.Rating = 5
+	// book.Discount = 5
+
+	// err = db.Create(&book).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error creating book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// ++++++++++++++++++++++++++++++++++++++++++
+	// READ
+	// ++++++++++++++++++++++++++++++++++++++++++
+
+	// var book book.Book
+
+	// err = db.Debug().First(&book, 2).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error finding book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// fmt.Println("Title:", book.Title)
+	// fmt.Println("book object %v", book)
+
+	// ++++++++++++++++++++++++++++++++++++++++++
+
+	// var books []book.Book
+
+	// err = db.Debug().Find(&books).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error finding book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// for _, b := range books {
+	// 	fmt.Println("Title:", b.Title)
+	// 	fmt.Println("book object %v", b)
+	// }
+
+	// ++++++++++++++++++++++++++++++++++++++++++
+
+	var books []book.Book
+
+	err = db.Debug().Where("title LIKE ?", "%a%").Find(&books).Error
+	if err != nil {
+		fmt.Println("+++++++++++++++++++++++++++")
+		fmt.Println("Error finding book records")
+		fmt.Println("+++++++++++++++++++++++++++")
+	}
+
+	for _, b := range books {
+		fmt.Println("Title:", b.Title)
+		fmt.Println("book object %v", b)
+	}
 
 	r := gin.Default()
 
