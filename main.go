@@ -20,114 +20,30 @@ func main() {
 	}
 
 	db.AutoMigrate(&book.Book{})
-	// ++++++++++++++++++++++++++++++++++++++++++
-	// CRUD OPERATION
-	// ++++++++++++++++++++++++++++++++++++++++++
-	// // CREATE
-	// ++++++++++++++++++++++++++++++++++++++++++
 
-	// book := book.Book{}
-	// book.Title = "Kura-kura Ninja"
-	// book.Description = "Kura-kura yang bisa bertarung seperti ninja, keren!"
-	// book.Price = 150000
-	// book.Rating = 5
-	// book.Discount = 5
+	bookRepository := book.NewRepository(db)
 
-	// err = db.Create(&book).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error creating book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
+	findall, _ := bookRepository.FindAll()
 
-	// ++++++++++++++++++++++++++++++++++++++++++
-	// READ
-	// ++++++++++++++++++++++++++++++++++++++++++
-
-	// var book book.Book
-
-	// err = db.Debug().First(&book, 2).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error finding book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
-
-	// fmt.Println("Title:", book.Title)
-	// fmt.Println("book object %v", book)
-
-	// ++++++++++++++++++++++++++++++++++++++++++
-
-	// var books []book.Book
-
-	// err = db.Debug().Find(&books).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error finding book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
-
-	// for _, b := range books {
-	// 	fmt.Println("Title:", b.Title)
-	// 	fmt.Println("book object %v", b)
-	// }
-
-	// ++++++++++++++++++++++++++++++++++++++++++
-
-	// var books []book.Book
-
-	// err = db.Debug().Where("title LIKE ?", "%a%").Find(&books).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error finding book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
-
-	// for _, b := range books {
-	// 	fmt.Println("Title:", b.Title)
-	// 	fmt.Println("book object %v", b)
-	// }
-
-	// ++++++++++++++++++++++++++++++++++++++++++
-	// UPDATE
-	// ++++++++++++++++++++++++++++++++++++++++++
-
-	// var book book.Book
-
-	// err = db.Debug().Where("id = ?", "1").First(&book).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error finding book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
-
-	// book.Title = "Tahilalats x Tokyobike"
-	// err = db.Debug().Save(&book).Error
-	// if err != nil {
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// 	fmt.Println("Error updating book records")
-	// 	fmt.Println("+++++++++++++++++++++++++++")
-	// }
-
-	// ++++++++++++++++++++++++++++++++++++++++++
-	// DELETE
-	// ++++++++++++++++++++++++++++++++++++++++++
-
-	var book book.Book
-
-	err = db.Debug().Where("id = ?", "1").First(&book).Error
-	if err != nil {
-		fmt.Println("+++++++++++++++++++++++++++")
-		fmt.Println("Error finding book records")
-		fmt.Println("+++++++++++++++++++++++++++")
+	for _, book := range findall {
+		fmt.Println("Title:", book.Title)
 	}
 
-	err = db.Debug().Delete(&book).Error
-	if err != nil {
-		fmt.Println("+++++++++++++++++++++++++++")
-		fmt.Println("Error deleting book records")
-		fmt.Println("+++++++++++++++++++++++++++")
+	findbyid, _ := bookRepository.FindByID(2)
+
+	fmt.Println("Title:", findbyid.Title)
+
+	book := book.Book{
+		Title:       "Tahilalats",
+		Description: "Tahilalats x Tokyobike",
+		Price:       100000,
+		Rating:      5,
+		Discount:    10,
 	}
+
+	newBook, _ := bookRepository.Create(book)
+
+	fmt.Println("Title:", newBook.Title)
 
 	r := gin.Default()
 
