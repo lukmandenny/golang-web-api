@@ -92,6 +92,27 @@ func main() {
 	// UPDATE
 	// ++++++++++++++++++++++++++++++++++++++++++
 
+	// var book book.Book
+
+	// err = db.Debug().Where("id = ?", "1").First(&book).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error finding book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// book.Title = "Tahilalats x Tokyobike"
+	// err = db.Debug().Save(&book).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error updating book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// ++++++++++++++++++++++++++++++++++++++++++
+	// DELETE
+	// ++++++++++++++++++++++++++++++++++++++++++
+
 	var book book.Book
 
 	err = db.Debug().Where("id = ?", "1").First(&book).Error
@@ -101,11 +122,10 @@ func main() {
 		fmt.Println("+++++++++++++++++++++++++++")
 	}
 
-	book.Title = "Tahilalats x Tokyobike"
-	err = db.Debug().Save(&book).Error
+	err = db.Debug().Delete(&book).Error
 	if err != nil {
 		fmt.Println("+++++++++++++++++++++++++++")
-		fmt.Println("Error updating book records")
+		fmt.Println("Error deleting book records")
 		fmt.Println("+++++++++++++++++++++++++++")
 	}
 
