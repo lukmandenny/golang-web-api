@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"golang-web-api/book"
 	"golang-web-api/handler"
 	"log"
 
@@ -13,12 +13,12 @@ import (
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 	dsn := "root:root@tcp(localhost:3307)/golang_web_api?charset=utf8mb4&parseTime=True&loc=Local"
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("DB connection error")
 	}
 
-	fmt.Println("Database connected")
+	db.AutoMigrate(&book.Book{})
 
 	r := gin.Default()
 
