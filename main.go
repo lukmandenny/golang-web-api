@@ -74,18 +74,39 @@ func main() {
 
 	// ++++++++++++++++++++++++++++++++++++++++++
 
-	var books []book.Book
+	// var books []book.Book
 
-	err = db.Debug().Where("title LIKE ?", "%a%").Find(&books).Error
+	// err = db.Debug().Where("title LIKE ?", "%a%").Find(&books).Error
+	// if err != nil {
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// 	fmt.Println("Error finding book records")
+	// 	fmt.Println("+++++++++++++++++++++++++++")
+	// }
+
+	// for _, b := range books {
+	// 	fmt.Println("Title:", b.Title)
+	// 	fmt.Println("book object %v", b)
+	// }
+
+	// ++++++++++++++++++++++++++++++++++++++++++
+	// UPDATE
+	// ++++++++++++++++++++++++++++++++++++++++++
+
+	var book book.Book
+
+	err = db.Debug().Where("id = ?", "1").First(&book).Error
 	if err != nil {
 		fmt.Println("+++++++++++++++++++++++++++")
 		fmt.Println("Error finding book records")
 		fmt.Println("+++++++++++++++++++++++++++")
 	}
 
-	for _, b := range books {
-		fmt.Println("Title:", b.Title)
-		fmt.Println("book object %v", b)
+	book.Title = "Tahilalats x Tokyobike"
+	err = db.Debug().Save(&book).Error
+	if err != nil {
+		fmt.Println("+++++++++++++++++++++++++++")
+		fmt.Println("Error updating book records")
+		fmt.Println("+++++++++++++++++++++++++++")
 	}
 
 	r := gin.Default()
