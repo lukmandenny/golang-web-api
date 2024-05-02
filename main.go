@@ -23,25 +23,24 @@ func main() {
 
 	bookRepository := book.NewRepository(db)
 
-	findall, _ := bookRepository.FindAll()
+	bookService := book.NewService(bookRepository)
+
+	findall, _ := bookService.FindAll()
 
 	for _, book := range findall {
 		fmt.Println("Title:", book.Title)
 	}
 
-	findbyid, _ := bookRepository.FindByID(2)
+	findbyid, _ := bookService.FindByID(2)
 
 	fmt.Println("Title:", findbyid.Title)
 
-	book := book.Book{
-		Title:       "Tahilalats",
-		Description: "Tahilalats x Tokyobike",
-		Price:       100000,
-		Rating:      5,
-		Discount:    10,
+	bookRequest := book.BookRequest{
+		Title: "Spiderman",
+		Price: 120000,
 	}
 
-	newBook, _ := bookRepository.Create(book)
+	newBook, _ := bookService.Create(bookRequest)
 
 	fmt.Println("Title:", newBook.Title)
 
