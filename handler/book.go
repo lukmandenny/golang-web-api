@@ -10,7 +10,15 @@ import (
 	"golang-web-api/book"
 )
 
-func RootHandler(ctx *gin.Context) {
+type bookHandler struct {
+	bookService book.Service
+}
+
+func NewBookHandler(bookService book.Service) *bookHandler {
+	return &bookHandler{bookService}
+}
+
+func (h *bookHandler) RootHandler(ctx *gin.Context) {
 	// Menggunakan gin.H untuk mengirim response JSON
 	data := gin.H{
 		"message": "Route URL",
@@ -18,7 +26,7 @@ func RootHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
-func HelloHandler(ctx *gin.Context) {
+func (h *bookHandler) HelloHandler(ctx *gin.Context) {
 	// Menggunakan gin.H untuk mengirim response JSON
 	data := gin.H{
 		"message": "Hello World! My Name is",
@@ -27,7 +35,7 @@ func HelloHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
-func BooksHandler(ctx *gin.Context) {
+func (h *bookHandler) BooksHandler(ctx *gin.Context) {
 	id := ctx.Param("id")
 	title := ctx.Param("title")
 
@@ -37,7 +45,7 @@ func BooksHandler(ctx *gin.Context) {
 	})
 }
 
-func QueryHandler(ctx *gin.Context) {
+func (h *bookHandler) QueryHandler(ctx *gin.Context) {
 	// Menggunakan ctx.Query("title") untuk menangkap nilai dari parameter query "title"
 	title := ctx.Query("title")
 	harga := ctx.Query("harga")
@@ -48,11 +56,11 @@ func QueryHandler(ctx *gin.Context) {
 	})
 }
 
-func PostBooksHandler(ctx *gin.Context) {
+func (h *bookHandler) PostBooksHandler(ctx *gin.Context) {
 	// title, price
-	var bookInput book.BookRequest
+	var bookRequest book.BookRequest
 
-	err := ctx.ShouldBindJSON(&bookInput)
+	err := ctx.ShouldBindJSON(&bookRequest)
 
 	if err != nil {
 		errorMessages := []string{}
@@ -78,10 +86,17 @@ func PostBooksHandler(ctx *gin.Context) {
 
 	}
 
+	book, err := h.bookService.Create(bookRequest)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"title": bookInput.Title,
-		"harga": bookInput.Price,
-		// "sub_title": bookInput.SubTitle,
+		"data": book,
 	})
 
 }
