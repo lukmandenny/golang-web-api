@@ -34,6 +34,7 @@ func main() {
 	// v1.GET("/query", bookHandler.QueryHandler)
 	v1.POST("/books", bookHandler.PostBooksHandler)
 	v1.GET("/books", bookHandler.GetBooks)
+	v1.GET("/books/:id", bookHandler.GetBook)
 
 	r.Run(":8888")
 
