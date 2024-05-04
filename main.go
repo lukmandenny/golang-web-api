@@ -28,11 +28,12 @@ func main() {
 
 	v1 := r.Group("/v1")
 
-	v1.GET("/", bookHandler.RootHandler)
-	v1.GET("/helloworld", bookHandler.HelloHandler)
-	v1.GET("/books/:id/:title", bookHandler.BooksHandler)
-	v1.GET("/query", bookHandler.QueryHandler)
+	// v1.GET("/", bookHandler.RootHandler)
+	// v1.GET("/helloworld", bookHandler.HelloHandler)
+	// v1.GET("/books/:id/:title", bookHandler.BooksHandler)
+	// v1.GET("/query", bookHandler.QueryHandler)
 	v1.POST("/books", bookHandler.PostBooksHandler)
+	v1.GET("/books", bookHandler.GetBooks)
 
 	r.Run(":8888")
 
