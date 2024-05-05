@@ -97,7 +97,7 @@ func (h *bookHandler) GetBook(ctx *gin.Context) {
 
 }
 
-func (h *bookHandler) PostBooksHandler(ctx *gin.Context) {
+func (h *bookHandler) CreateBook(ctx *gin.Context) {
 	// title, price
 	var bookRequest book.BookRequest
 
@@ -128,6 +128,54 @@ func (h *bookHandler) PostBooksHandler(ctx *gin.Context) {
 	}
 
 	book, err := h.bookService.Create(bookRequest)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": book,
+	})
+
+}
+
+func (h *bookHandler) UpdateBook(ctx *gin.Context) {
+
+	// title, price
+	var bookRequestUpdate book.BookRequestUpdate
+
+	err := ctx.ShouldBindJSON(&bookRequestUpdate)
+
+	if err != nil {
+		errorMessages := []string{}
+		if vErr, ok := err.(validator.ValidationErrors); ok {
+			// Lakukan iterasi untuk setiap error
+			for _, e := range vErr {
+				// Proses setiap error
+				errorMessage := fmt.Sprintf("Error on field %s, condition: %s", e.Field(), e.ActualTag())
+				errorMessages = append(errorMessages, errorMessage)
+			}
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"errors": errorMessages,
+			})
+			return
+		} else {
+			errorMessages = append(errorMessages, err.Error())
+			// Jika err bukan validator.ValidationErrors, kirimkan pesan kesalahan umum
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"errors": errorMessages,
+			})
+			return
+		}
+
+	}
+
+	idString := ctx.Param("id")
+	id, _ := strconv.Atoi(idString)
+	book, err := h.bookService.Update(id, bookRequestUpdate)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{

@@ -32,9 +32,10 @@ func main() {
 	// v1.GET("/helloworld", bookHandler.HelloHandler)
 	// v1.GET("/books/:id/:title", bookHandler.BooksHandler)
 	// v1.GET("/query", bookHandler.QueryHandler)
-	v1.POST("/books", bookHandler.PostBooksHandler)
+	v1.POST("/books", bookHandler.CreateBook)
 	v1.GET("/books", bookHandler.GetBooks)
 	v1.GET("/books/:id", bookHandler.GetBook)
+	v1.PUT("/books/:id", bookHandler.UpdateBook)
 
 	r.Run(":8888")
 
